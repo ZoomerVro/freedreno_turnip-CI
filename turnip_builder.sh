@@ -7,7 +7,7 @@ nocolor='\033[0m'
 deps="meson ninja patchelf unzip curl pip flex bison zip"
 workdir="$(pwd)/turnip_workdir"
 magiskdir="$workdir/turnip_module"
-ndkver="android-ndk-r28"
+ndkver="android-ndk-r28b"
 ndk="$workdir/$ndkver/toolchains/llvm/prebuilt/linux-x86_64/bin"
 sdkver="34"
 mesasrc="https://gitlab.freedesktop.org/mesa/mesa/-/archive/main/mesa-main.zip"
@@ -82,7 +82,7 @@ build_lib_for_android(){
 [binaries]
 ar = '$ndk/llvm-ar'
 c = ['ccache', '$ndk/aarch64-linux-android$sdkver-clang']
-cpp = ['ccache', '$ndk/aarch64-linux-android$sdkver-clang++', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '-static-libstdc++', '-Wno-error=c++11-narrowing']
+cpp = ['ccache', '$ndk/aarch64-linux-android$sdkver-clang++', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '--start-no-unused-arguments', '-static-libstdc++', '--end-no-unused-arguments']
 c_ld = '$ndk/ld.lld'
 cpp_ld = '$ndk/ld.lld'
 strip = '$ndk/aarch64-linux-android-strip'
@@ -121,7 +121,8 @@ EOF
 			-Dvulkan-beta=true \
 			-Dfreedreno-kmds=kgsl \
 			-Db_lto=true \
-			-Dstrip=true &> "$workdir/meson_log"
+			-Dstrip=true \
+			-Degl=disabled &> "$workdir/meson_log"
 
 	echo "Compiling build files ..." $'\n'
 		ninja -C build-android-aarch64 &> "$workdir/ninja_log"
