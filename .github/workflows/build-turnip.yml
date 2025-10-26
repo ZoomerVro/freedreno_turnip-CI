@@ -29,10 +29,8 @@ jobs:
       with:
         name: Upload meson and ninja logs for debugging
         path: |
-          turnip_workdir/ninja_log_msm
-          turnip_workdir/ninja_log_kgsl
-          turnip_workdir/meson_log_msm
-          turnip_workdir/meson_log_kgsl
+          turnip_workdir/ninja_log
+          turnip_workdir/mesa-main/build-android-aarch64/meson-logs/meson-log.txt
   #  - name: Upload a Build Artifact
    #   uses: actions/upload-artifact@v4
    #   with:
@@ -41,18 +39,10 @@ jobs:
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v4
       with:
-        name : Turnip-AdrenoTools-msm-${{ env.VERSION }}-${{ env.DATE }}
+        name : Turnip-AdrenoTools-${{ env.VERSION }}-${{ env.DATE }}
         path : |
-           turnip_workdir/msm/vulkan.freedreno.so
-           turnip_workdir/msm/meta.json
-
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name : Turnip-AdrenoTools-kgsl-${{ env.VERSION }}-${{ env.DATE }}
-        path : |
-           turnip_workdir/kgsl/vulkan.freedreno.so
-           turnip_workdir/kgsl/meta.json
+           turnip_workdir/vulkan.freedreno.so
+           turnip_workdir/meta.json
            
  #   - name: Release "turnip"
   #    uses: softprops/action-gh-release@v1
