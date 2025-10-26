@@ -1,4 +1,4 @@
-name: Build "Turnip"
+name: Build "Turnip" A9
 
 on:
   workflow_dispatch:
@@ -16,12 +16,10 @@ jobs:
         sudo sed -i 's/^Types: deb$/Types: deb deb-src/' /etc/apt/sources.list.d/ubuntu.sources
         sudo apt update
         sudo apt build-dep mesa -y
-        sudo sed -i 's/jammy/mantic/g' /etc/apt/sources.list
-        sudo apt update
-        sudo apt install meson
-
+        sudo apt install meson-1.5 
+    
     - name: Execute build script
-      run: bash ./turnip_builder.sh
+      run: bash ./turnip_builder_a9.sh
 
     - name: Extract version from file
       id: extract_version
@@ -34,11 +32,11 @@ jobs:
         path: |
           turnip_workdir/ninja_log
           turnip_workdir/mesa-main/build-android-aarch64/meson-logs/meson-log.txt
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name : Turnip-Magisk-${{ env.VERSION }}-${{github.run_number}}
-        path : turnip_workdir/turnip_module
+  #  - name: Upload a Build Artifact
+   #   uses: actions/upload-artifact@v4
+   #   with:
+     #   name : Turnip-Magisk-${{ env.VERSION }}-${{github.run_number}}
+      #  path : turnip_workdir/turnip_module
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v4
       with:
