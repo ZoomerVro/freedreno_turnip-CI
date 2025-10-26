@@ -145,7 +145,7 @@ EOF
 		ninja -C build-android-aarch64-msm &> "$workdir/ninja_log_msm"
 		ninja -C build-android-aarch64-kgsl &> "$workdir/ninja_log_kgsl"
 
-	if ! [ -a "$workdir"/mesa-main/build-android-aarch64/src/freedreno/vulkan/libvulkan_freedreno.so ]; then
+	if ! [ -a "$workdir"/mesa-main/build-android-aarch64-msm/src/freedreno/vulkan/libvulkan_freedreno.so ]; then
 		echo -e "$red msm Build failed! $nocolor" && exit 1
 	fi
 	if ! [ -a "$workdir"/mesa-main/build-android-aarch64-kgsl/src/freedreno/vulkan/libvulkan_freedreno.so ]; then
