@@ -19,11 +19,9 @@ jobs:
         sudo apt install meson-1.5 
     
     - name: Execute build script
-      run: bash ./turnip_builder_a9.sh
-
-    - name: Extract version from file
-      id: extract_version
-      run: echo "VERSION=$(cat $GITHUB_WORKSPACE/turnip_workdir/mesa-main/VERSION)" >> $GITHUB_ENV
+      run: |
+           bash ./turnip_builder_a9.sh
+           echo "VERSION=$(cat $GITHUB_WORKSPACE/turnip_workdir/mesa-main/VERSION)" >> $GITHUB_ENV
            echo "DATE=$(date +'%d%m%Y')" >> $GITHUB_ENV
            
     - name: Upload a Build Artifact
