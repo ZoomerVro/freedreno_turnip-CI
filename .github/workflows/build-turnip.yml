@@ -24,7 +24,8 @@ jobs:
     - name: Extract version from file
       id: extract_version
       run: echo "VERSION=$(cat $GITHUB_WORKSPACE/turnip_workdir/mesa-main/VERSION)" >> $GITHUB_ENV
-
+           echo "DATE=$(date +'%d%m%Y')" >> $GITHUB_ENV
+           
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v4
       with:
@@ -40,7 +41,7 @@ jobs:
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v4
       with:
-        name : Turnip-AdrenoTools-${{ env.VERSION }}-${{github.run_number}}
+        name : Turnip-AdrenoTools-${{ env.VERSION }}-${{ env.DATE }}
         path : |
            turnip_workdir/vulkan.freedreno.so
            turnip_workdir/meta.json
