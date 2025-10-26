@@ -9,7 +9,7 @@ workdir="$(pwd)/turnip_workdir"
 magiskdir="$workdir/turnip_module"
 ndkver="android-ndk-r29"
 ndk="$workdir/$ndkver/toolchains/llvm/prebuilt/linux-x86_64/bin"
-sdkver="28"
+sdkver="34"
 mesasrc="https://gitlab.freedesktop.org/mesa/mesa/-/archive/main/mesa-main.zip"
 
 clear
@@ -20,7 +20,7 @@ run_all(){
 	check_deps
 	prepare_workdir
 	build_lib_for_android
-	#port_lib_for_magisk
+	port_lib_for_magisk
 	port_lib_for_adrenotools
 }
 
@@ -109,23 +109,7 @@ cpu = 'x86_64'
 endian = 'little'
 EOF
 
-		meson setup build-android-aarch64-msm \
-			--cross-file "android-aarch64.txt" \
-			--native-file "native.txt" \
-			-Dbuildtype=release \
-			-Dplatforms=android \
-			-Dplatform-sdk-version="$sdkver" \
-			-Dandroid-stub=true \
-			-Dgallium-drivers= \
-			-Dvulkan-drivers=freedreno \
-			-Dvulkan-beta=true \
-			-Dfreedreno-kmds=msm \
-			-Db_lto=true \
-   			-Db_lto_mode=thin \
-			-Dstrip=true \
-			-Degl=disabled &> "$workdir/meson_log_msm"
-
-		meson setup build-android-aarch64-kgsl \
+		meson setup build-android-aarch64 \
 			--cross-file "android-aarch64.txt" \
 			--native-file "native.txt" \
 			-Dbuildtype=release \
@@ -139,23 +123,19 @@ EOF
 			-Db_lto=true \
    			-Db_lto_mode=thin \
 			-Dstrip=true \
-			-Degl=disabled &> "$workdir/meson_log_kgsl"
+			-Degl=disabled &> "$workdir/meson_log"
 
 	echo "Compiling build files ..." $'\n'
-		ninja -C build-android-aarch64-msm &> "$workdir/ninja_log_msm"
-		ninja -C build-android-aarch64-kgsl &> "$workdir/ninja_log_kgsl"
+		ninja -C build-android-aarch64 &> "$workdir/ninja_log"
 
-	if ! [ -a "$workdir"/mesa-main/build-android-aarch64-msm/src/freedreno/vulkan/libvulkan_freedreno.so ]; then
-		echo -e "$red msm Build failed! $nocolor" && exit 1
-	fi
-	if ! [ -a "$workdir"/mesa-main/build-android-aarch64-kgsl/src/freedreno/vulkan/libvulkan_freedreno.so ]; then
-		echo -e "$red kgsl Build failed! $nocolor" && exit 1
+	if ! [ -a "$workdir"/mesa-main/build-android-aarch64/src/freedreno/vulkan/libvulkan_freedreno.so ]; then
+		echo -e "$red Build failed! $nocolor" && exit 1
 	fi
 }
 
 port_lib_for_magisk(){
 	echo "Using patchelf to match soname ..." $'\n'
-		cp "$workdir"/mesa-main/build-android-aarch64-kgsl/src/freedreno/vulkan/libvulkan_freedreno.so "$workdir"
+		cp "$workdir"/mesa-main/build-android-aarch64/src/freedreno/vulkan/libvulkan_freedreno.so "$workdir"
 		cd "$workdir"
 		patchelf --set-soname vulkan.adreno.so libvulkan_freedreno.so
 		mv libvulkan_freedreno.so vulkan.adreno.so
@@ -213,31 +193,14 @@ EOF
 port_lib_for_adrenotools(){
 	libname=vulkan.freedreno.so
 	echo "Using patchelf to match soname" $'\n'
-		cp "$workdir"/mesa-main/build-android-aarch64-msm/src/freedreno/vulkan/libvulkan_freedreno.so "$workdir"/kgsl/$libname
-		cp "$workdir"/mesa-main/build-android-aarch64-msm/src/freedreno/vulkan/libvulkan_freedreno.so "$workdir"/msm/$libname
-		cd "$workdir"/kgsl
+		cp "$workdir"/mesa-main/build-android-aarch64/src/freedreno/vulkan/libvulkan_freedreno.so "$workdir"/$libname
+		cd "$workdir"
 		patchelf --set-soname $libname $libname
 	echo "Preparing meta.json" $'\n'
 		cat <<EOF > "meta.json"
 {
 	"schemaVersion": 1,
-	"name": "turnip-CI-kgsl-$(date)",
-	"description": "$(date)",
-	"author": "MrMiy4mo, kethen",
-	"packageVersion": "1",
-	"vendor": "Mesa",
-	"driverVersion": "$(cat $workdir/mesa-main/VERSION)",
-	"minApi": $sdkver,
-	"libraryName": "$libname"
-}
-EOF
-    cd "$workdir"/msm
-		patchelf --set-soname $libname $libname
-	echo "Preparing meta.json" $'\n'
-		cat <<EOF > "meta.json"
-{
-	"schemaVersion": 1,
-	"name": "turnip-CI-msm-$(date)",
+	"name": "freedreno_turnip-CI",
 	"description": "$(date)",
 	"author": "MrMiy4mo, kethen",
 	"packageVersion": "1",
@@ -248,15 +211,10 @@ EOF
 }
 EOF
 
-	zip -9 "$workdir"/msm/turnip_msm_adrenotools.zip $libname meta.json &> /dev/null
-	if ! [ -a "$workdir"/turnip_msm_adrenotools.zip ];
-		then echo -e "$red-Packing turnip_msm_adrenotools.zip failed!$nocolor" && exit 1
-		else echo -e "$green-All done, the module saved to;$nocolor" && echo "$workdir"/msm/turnip_msm_adrenotools.zip
-	fi
-	zip -9 "$workdir"/kgsl/turnip_kgsl_adrenotools.zip $libname meta.json &> /dev/null
-	if ! [ -a "$workdir"/turnip_kgsl_adrenotools.zip ];
-		then echo -e "$red-Packing turnip_kgsl_adrenotools.zip failed!$nocolor" && exit 1
-		else echo -e "$green-All done, the module saved to;$nocolor" && echo "$workdir"/kgsl/turnip_kgsl_adrenotools.zip
+	zip -9 "$workdir"/turnip_adrenotools.zip $libname meta.json &> /dev/null
+	if ! [ -a "$workdir"/turnip_adrenotools.zip ];
+		then echo -e "$red-Packing turnip_adrenotools.zip failed!$nocolor" && exit 1
+		else echo -e "$green-All done, the module saved to;$nocolor" && echo "$workdir"/turnip_adrenotools.zip
 	fi
 }
 
