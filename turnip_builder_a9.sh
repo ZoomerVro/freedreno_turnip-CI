@@ -1,7 +1,6 @@
 #!/bin/bash -e
 
 #Define variables
-build_date=$(date+"%d%m%Y")
 green='\033[0;32m'
 red='\033[0;31m'
 nocolor='\033[0m'
@@ -192,6 +191,7 @@ EOF
 }
 
 port_lib_for_adrenotools(){
+    build_date=$(date +"%d%m%Y")
 	libname=vulkan.freedreno.so
 	echo "Using patchelf to match soname" $'\n'
 		cp "$workdir"/mesa-main/build-android-aarch64/src/freedreno/vulkan/libvulkan_freedreno.so "$workdir"/$libname
@@ -201,8 +201,8 @@ port_lib_for_adrenotools(){
 		cat <<EOF > "meta.json"
 {
 	"schemaVersion": 1,
-	"name": "turnip-CI-$(build_date)",
-	"description": "Compiled from mesa-main $(build_date)",
+	"name": "turnip-CI-$build_date",
+	"description": "Compiled from mesa-main $build_date",
 	"author": "MrMiy4mo, kethen",
 	"packageVersion": "1",
 	"vendor": "Mesa",
