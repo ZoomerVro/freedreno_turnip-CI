@@ -200,8 +200,8 @@ port_lib_for_adrenotools(){
 		cat <<EOF > "meta.json"
 {
 	"schemaVersion": 1,
-	"name": "turnip-CI-$(date + '%d%m%Y')",
-	"description": "Compiled from mesa-main $(date + '%d%m%Y')",
+	"name": "turnip-CI-$(date + "%d%m%Y")",
+	"description": "Compiled from mesa-main $(date + "%d%m%Y")",
 	"author": "MrMiy4mo, kethen",
 	"packageVersion": "1",
 	"vendor": "Mesa",
