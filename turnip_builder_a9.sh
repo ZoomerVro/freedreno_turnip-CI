@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 #Define variables
-build_date= $(date + "%d%m%Y")
+build_date=$(date+"%d%m%Y")
 green='\033[0;32m'
 red='\033[0;31m'
 nocolor='\033[0m'
