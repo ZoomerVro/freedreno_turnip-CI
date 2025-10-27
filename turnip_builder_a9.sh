@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
 #Define variables
+build_date= $(date + "%d%m%Y")
 green='\033[0;32m'
 red='\033[0;31m'
 nocolor='\033[0m'
@@ -200,8 +201,8 @@ port_lib_for_adrenotools(){
 		cat <<EOF > "meta.json"
 {
 	"schemaVersion": 1,
-	"name": "turnip-CI-$(date + "%d%m%Y")",
-	"description": "Compiled from mesa-main $(date + "%d%m%Y")",
+	"name": "turnip-CI-$(build_date)",
+	"description": "Compiled from mesa-main $(build_date)",
 	"author": "MrMiy4mo, kethen",
 	"packageVersion": "1",
 	"vendor": "Mesa",
