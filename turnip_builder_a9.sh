@@ -9,7 +9,7 @@ workdir="$(pwd)/turnip_workdir"
 magiskdir="$workdir/turnip_module"
 ndkver="android-ndk-r29"
 ndk="$workdir/$ndkver/toolchains/llvm/prebuilt/linux-x86_64/bin"
-sdkver="28"
+sdkver="34"
 mesasrc="https://gitlab.freedesktop.org/mesa/mesa/-/archive/main/mesa-main.zip"
 
 clear
@@ -207,7 +207,7 @@ port_lib_for_adrenotools(){
 	"packageVersion": "1",
 	"vendor": "Mesa",
 	"driverVersion": "$(cat $workdir/mesa-main/VERSION)",
-	"minApi": $sdkver,
+	"minApi": 28,
 	"libraryName": "$libname"
 }
 EOF
