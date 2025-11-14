@@ -18,7 +18,7 @@ jobs:
         sudo apt build-dep mesa -y
         sudo apt install meson-1.5 
     
-    - name: Execute build script
+    - name: Execute_build_script
       run: |
            bash ./turnip_builder_a9.sh
            echo "VERSION=$(cat $GITHUB_WORKSPACE/turnip_workdir/mesa-main/VERSION)" >> $GITHUB_ENV
@@ -34,7 +34,7 @@ jobs:
           turnip_workdir/mesa-main/build-android-aarch64/meson-logs/meson-log.txt
           
     - name: Fail if build failed
-      if: steps.Exexute build script.outcome == 'failure'
+      if: steps.Exexute_build_script.outcome == 'failure'
       run: |
             echo "Build failed. Logs were uploaded."
             exit 1
