@@ -191,6 +191,16 @@ EOF
 }
 
 port_lib_for_adrenotools(){
+
+    FILENAME="$workdir/mesa-main/include/vulkan/vulkan_core.h"
+    PATCH=$(grep -E "^#define VK_HEADER_VERSION " "$FILENAME" \
+        | awk '{print $3}')
+    MAJOR=$(grep -E "^#define VK_HEADER_VERSION_COMPLETE" "$FILENAME" \
+        | sed -n 's/.*VK_MAKE_API_VERSION(0, \([0-9]*\),.*/\1/p')
+    MINOR=$(grep -E "^#define VK_HEADER_VERSION_COMPLETE" "$FILENAME" \
+        | sed -n 's/.*VK_MAKE_API_VERSION(0, [0-9]*, \([0-9]*\),.*/\1/p')
+    VULKAN_VERSION="$MAJOR.$MINOR.$PATCH"
+
     build_date=$(date +"%d%m%Y")
 	libname=vulkan.freedreno.so
 	echo "Using patchelf to match soname" $'\n'
@@ -202,7 +212,7 @@ port_lib_for_adrenotools(){
 {
 	"schemaVersion": 1,
 	"name": "turnip-CI-$build_date",
-	"description": "Compiled from mesa-main $build_date",
+	"description": "Compiled from mesa-main $build_date Vulkan $VULKAN_VERSION",
 	"author": "MrMiy4mo, kethen",
 	"packageVersion": "1",
 	"vendor": "Mesa",
