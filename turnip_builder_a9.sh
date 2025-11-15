@@ -212,11 +212,11 @@ port_lib_for_adrenotools(){
 {
 	"schemaVersion": 1,
 	"name": "turnip-CI-$build_date",
-	"description": "Compiled from mesa-main $build_date Vulkan $VULKAN_VERSION",
+	"description": "Compiled from mesa-main $(cat $workdir/mesa-main/VERSION) $build_date",
 	"author": "MrMiy4mo, kethen",
 	"packageVersion": "1",
 	"vendor": "Mesa",
-	"driverVersion": "$(cat $workdir/mesa-main/VERSION)",
+	"driverVersion": "Vulkan $VULKAN_VERSION",
 	"minApi": 28,
 	"libraryName": "$libname"
 }
